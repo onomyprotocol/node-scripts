@@ -13,8 +13,8 @@ mkdir -p $NODE_HOME
 mkdir -p $NODE_HOME/bin
 mkdir -p $NODE_HOME/cosmovisor/genesis/bin
 
-cp -n $SCRIPTS_HOME/bin/* $NODE_HOME/bin/
-cp -n $SCRIPTS_HOME/cosmovisor/genesis/bin/* $NODE_HOME/cosmovisor/genesis/bin/
+cp --update=none $SCRIPTS_HOME/bin/* $NODE_HOME/bin/
+cp --update=none $SCRIPTS_HOME/cosmovisor/genesis/bin/* $NODE_HOME/cosmovisor/genesis/bin/
 
 IS_INITIAL_SETUP=false
 
@@ -176,7 +176,7 @@ setConfig $NODE_CONFIG_TOML rosetta enable false
 #######################################
 setConfig $NODE_CONFIG_TOML rpc laddr "\"tcp://$LISTEN_HOST:$LISTEN_RPC_PORT\""
 if [ -z "$RPC_CORS_ALLOWED_ORIGINS" ]; then
-  setConfig $NODE_CONFIG_TOML rpc cors_allowed_origins ""
+  setConfig $NODE_CONFIG_TOML rpc cors_allowed_origins "\"\""
 else
   setConfig $NODE_CONFIG_TOML rpc cors_allowed_origins "$RPC_CORS_ALLOWED_ORIGINS"
 fi

@@ -2,8 +2,14 @@
 
 Docker setup scripts for cosmos based blockchains
 
-## Install
+## Prerequisites
 
+    sudo apt install git docker.io docker-compose tmux vim
+    sudo usermod -aG docker $USER
+    sudo reboot
+
+## Install
+    
     git clone https://github.com/onomyprotocol/node-scripts.git
     cd node-scripts
     cp examples/onomy-mainnet-full-node.env ./.env
