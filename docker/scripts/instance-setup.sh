@@ -154,18 +154,6 @@ else
   setConfig $NODE_CONFIG_TOML statesync rpc_servers "\"$NODE_STATESYNC_RPC_SERVERS\""
 fi
 
-if [ -z "$NODE_STATESYNC_TRUST_HEIGHT" ]; then
-  setConfig $NODE_CONFIG_TOML statesync trust_height 0
-else
-  setConfig $NODE_CONFIG_TOML statesync trust_height $NODE_STATESYNC_TRUST_HEIGHT
-fi
-
-if [ -z "$NODE_STATESYNC_TRUST_HASH" ]; then
-  setConfig $NODE_CONFIG_TOML statesync trust_hash "\"\""
-else
-  setConfig $NODE_CONFIG_TOML statesync trust_hash "\"$NODE_STATESYNC_TRUST_HASH\""
-fi
-
 ###########################################################
 # config.toml rosetta
 ###########################################################
@@ -233,5 +221,26 @@ if [ "$IS_INITIAL_SETUP" = true ]; then
     cd $NODE_HOME
     echo "Downloading addrbook: $CHAIN_ADDRBOOK_URL"
     curl --no-progress-meter  -L -o $NODE_CONFIG_DIR/addrbook.json $CHAIN_ADDRBOOK_URL
+  fi
+
+  if [ -z "$NODE_STATESYNC_TRUST_RPC" ]; then
+    if [ -z "$NODE_STATESYNC_TRUST_HEIGHT" ]; then
+      setConfig $NODE_CONFIG_TOML statesync trust_height 0
+    else
+      setConfig $NODE_CONFIG_TOML statesync trust_height $NODE_STATESYNC_TRUST_HEIGHT
+    fi
+
+    if [ -z "$NODE_STATESYNC_TRUST_HASH" ]; then
+      setConfig $NODE_CONFIG_TOML statesync trust_hash "\"\""
+    else
+      setConfig $NODE_CONFIG_TOML statesync trust_hash "\"$NODE_STATESYNC_TRUST_HASH\""
+    fi
+  else
+    LATEST_HEIGHT=$(curl -s "$NODE_STATESYNC_TRUST_RPC/block" | jq -r .result.block.header.height)
+    NODE_STATESYNC_TRUST_HEIGHT=$(("$LATEST_HEIGHT" - 2000))
+    NODE_STATESYNC_TRUST_HASH=$(curl -s "$NODE_STATESYNC_TRUST_RPC/block?height=$NODE_STATESYNC_TRUST_HEIGHT" | jq -r .result.block_id.hash)
+    
+    setConfig $NODE_CONFIG_TOML statesync trust_height $NODE_STATESYNC_TRUST_HEIGHT
+    setConfig $NODE_CONFIG_TOML statesync trust_hash "\"$NODE_STATESYNC_TRUST_HASH\""
   fi
 fi
