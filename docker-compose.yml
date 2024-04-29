@@ -13,6 +13,7 @@ services:
     restart: always
     environment:
       - NODE_MONIKER=${NODE_MONIKER}
+      - NODE_CONTAINER_NAME=${NODE_CONTAINER_NAME}
       - CHAIN_ID=${CHAIN_ID}
       - CHAIN_GENESIS_URL=${CHAIN_GENESIS_URL}
       - CHAIN_SNAPSHOT_URL=${CHAIN_SNAPSHOT_URL:-}
