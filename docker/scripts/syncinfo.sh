@@ -1,4 +1,6 @@
 #!/bin/bash
+source $SCRIPTS_HOME/init-env.sh
+
 JSON=`cosmovisor status 2>&1`
 NET_JSON=`curl -sS http://localhost:$LISTEN_RPC_PORT/net_info`
 LATEST=`echo $JSON | jq -r '.SyncInfo.latest_block_time'`
