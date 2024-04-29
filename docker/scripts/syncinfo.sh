@@ -1,9 +1,9 @@
 #!/bin/bash
 source $SCRIPTS_HOME/init-env.sh
 
-JSON=`cosmovisor status 2>&1`
+JSON=`curl -sS http://localhost:$LISTEN_RPC_PORT/status`
 NET_JSON=`curl -sS http://localhost:$LISTEN_RPC_PORT/net_info`
-LATEST=`echo $JSON | jq -r '.SyncInfo.latest_block_time'`
+LATEST=`echo $JSON | jq -r '.result.sync_info.latest_block_time'`
 PEERS=`echo $NET_JSON | jq -r '.result.n_peers'`
 NOW=`date -u --iso-8601=ns`
 echo "----- $NODE_MONIKER@$CHAIN_ID -----"
