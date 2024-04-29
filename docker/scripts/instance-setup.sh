@@ -115,6 +115,8 @@ fi
 ###########################################################
 # config.toml p2p
 ###########################################################
+setConfig $NODE_CONFIG_TOML p2p laddr "\"tcp://$LISTEN_HOST:$LISTEN_P2P_PORT\""
+
 if [ "$NODE_P2P_ADDR_BOOK_STRICT" = true ] ; then
   setConfig $NODE_CONFIG_TOML p2p addr_book_strict true
 else
