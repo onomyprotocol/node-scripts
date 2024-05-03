@@ -62,7 +62,7 @@ if [ -z "$EXISTING_SEEDS" ]; then
     echo "Fetching node ids from $SEED_HOSTS"
     CHAIN_SEEDS=
     for seedIP in ${SEED_HOSTS//,/ } ; do
-      wget $seedIP:26657/status? -O $NODE_HOME/seed_status.json
+      wget $seedIP:$SEEDS_RPC_PORT/status? -O $NODE_HOME/seed_status.json
       seedID=$(jq -r .result.node_info.id $NODE_HOME/seed_status.json)
 
       if [[ -z "${seedID}" ]]; then
@@ -73,7 +73,7 @@ if [ -z "$EXISTING_SEEDS" ]; then
 
       rm $NODE_HOME/seed_status.json
 
-      CHAIN_SEEDS="$CHAIN_SEEDS$seedID@$seedIP:26656,"
+      CHAIN_SEEDS="$CHAIN_SEEDS$seedID@$seedIP:$SEEDS_P2P_PORT,"
     done
     setConfig $NODE_CONFIG_TOML p2p seeds "\"$CHAIN_SEEDS\""
   fi
@@ -91,7 +91,7 @@ if [ -z "$EXISTING_PERSISTENT_PEERS" ]; then
     PERSISTENT_PEERS=
     PERSISTENT_PEER_IDS=
     for peerHost in ${PERSISTENT_PEER_HOSTS//,/ } ; do
-      wget $peerHost:26657/status? -O $NODE_HOME/persistent_peer_status.json
+      wget $peerHost:$SEEDS_RPC_PORT/status? -O $NODE_HOME/persistent_peer_status.json
       peerID=$(jq -r .result.node_info.id $NODE_HOME/persistent_peer_status.json)
 
       if [[ -z "${peerID}" ]]; then
@@ -102,7 +102,7 @@ if [ -z "$EXISTING_PERSISTENT_PEERS" ]; then
 
       rm $NODE_HOME/persistent_peer_status.json
 
-      PERSISTENT_PEERS="$PERSISTENT_PEERS$peerID@$peerHost:26656,"
+      PERSISTENT_PEERS="$PERSISTENT_PEERS$peerID@$peerHost:$SEEDS_P2P_PORT,"
       PERSISTENT_PEER_IDS="$PERSISTENT_PEER_IDS$peerID,"
     done
     setConfig $NODE_CONFIG_TOML p2p persistent_peers "\"$PERSISTENT_PEERS\""
